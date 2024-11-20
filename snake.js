@@ -30,19 +30,14 @@ function goDown() {
 
 function goRight() {
   headLeft = headLeft + 1;
-  if (headTop === config.width) {
-    headLeft = config.width - 1;
-  }
 
   print();
 }
 
-function goLeft(){
+function goLeft() {
   headLeft = headLeft - 1;
-  if (headTop === config.width) {
-    headTop = 0;
-  print()
-}
+
+  print();
 }
 function changeDirection(newDirection) {
   if (direction === "up" || direction === "down") {
@@ -54,7 +49,7 @@ function changeDirection(newDirection) {
       direction = newDirection;
     }
   }
-  console.log(direction)
+  console.log(direction);
 }
 
 setInterval(gameLoop, 300);
@@ -69,15 +64,19 @@ function gameLoop() {
     case "down":
       goDown();
       break;
-      case "left":
-        goLeft();
-        break;
+    case "left":
+      goLeft();
+      break;
   }
 }
 
 function print() {
   const snakeHtml = `
-<div class="snake" style="width: ${1 * config.size}px; height: ${1 * config.size}px; top: ${headTop * config.size}px; left: ${headLeft * config.size}px"></div>
+<div class="snake" style="width: ${1 * config.size}px; height: ${
+    1 * config.size
+  }px; top: ${headTop * config.size}px; left: ${
+    headLeft * config.size
+  }px"></div>
     `;
   boardEl.innerHTML = snakeHtml;
 }
