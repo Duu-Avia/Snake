@@ -1,6 +1,12 @@
-let headTop = 10;
-let headLeft = 12;
-let direction = "up";
+let headTop = 5;
+let headLeft = 5;
+let direction = "right";
+let intervalId = null
+let snakeBody = [
+  {x:2, y:5 },
+  {x:3, y:5 },
+  {x:4, y:5 },
+];
 
 const config = {
   size: 20,
@@ -18,6 +24,7 @@ function goUp() {
     headTop = config.height - 1;
   }
   print();
+ 
 }
 
 function goDown() {
@@ -30,16 +37,25 @@ function goDown() {
 
 function goRight() {
   headLeft = headLeft + 1;
+  if (headLeft === config.width) {
+    headLeft =  0;
+  }
+  
 
   print();
 }
 
 function goLeft() {
   headLeft = headLeft - 1;
+  if (headLeft < 0) {
+    headLeft = config.width - 1;
+  }
+ 
 
   print();
 }
 function changeDirection(newDirection) {
+
   if (direction === "up" || direction === "down") {
     if (newDirection === "right" || newDirection === "left") {
       direction = newDirection;
@@ -49,11 +65,46 @@ function changeDirection(newDirection) {
       direction = newDirection;
     }
   }
+ 
   console.log(direction);
 }
 
-setInterval(gameLoop, 300);
+function startGame (){
+  if (!intervalId){
+    intervalId = setInterval(gameLoop, 200);
+  }
+   
+}
+
+function pauseGame (){
+  if (intervalId) {
+    clearInterval(intervalId)
+    intervalId = null
+  }
+}
+function reset (){
+  headTop = 5
+  headLeft = 5
+  direction = "right"
+   snakeBody = [
+    {x:2, y:5 },
+    {x:3, y:5 },
+    {x:4, y:5 },
+  ];
+}
+
+function restartGame (){
+  
+  headTop = 10;
+  headLeft = 12;
+  direction = "right"
+  reset();
+  
+}
+
 function gameLoop() {
+  snakeBody.push({x:headLeft, y:headTop})
+  snakeBody.shift()
   switch (direction) {
     case "up":
       goUp();
@@ -70,15 +121,33 @@ function gameLoop() {
   }
 }
 
+function listenKeys(event) {
+  key = event.key
+  console.log(key)
+  switch (key){
+    case "ArrowUp":
+    changeDirection("up");
+    break;
+    case "ArrowDown":
+    changeDirection("down")
+    break;
+    case "ArrowLeft":
+    changeDirection("left")
+    break;
+    case "ArrowRight":
+      changeDirection("right")
+  }
+}
+
+document.addEventListener("keydown", listenKeys)
+
 function print() {
-  const snakeHtml = `
-<div class="snake" style="width: ${1 * config.size}px; height: ${
-    1 * config.size
-  }px; top: ${headTop * config.size}px; left: ${
-    headLeft * config.size
-  }px"></div>
-    `;
+  let snakeBodyHtml = "";
+  for ( let i = 0; i<snakeBody.length; i++){
+    snakeBodyHtml += `<div class="snake" style="width: ${1 * config.size}px; height: ${1 * config.size}px; top: ${snakeBody[i].y * config.size}px; left: ${snakeBody[i].x * config.size}px"></div>`
+  }
+
+  const snakeHtml = ` ${snakeBodyHtml}`;
   boardEl.innerHTML = snakeHtml;
 }
 
-print();
