@@ -1,4 +1,4 @@
-.board {
+#board {
   background-color: black;
   margin-left: auto;
   margin-right: auto;
@@ -9,5 +9,9 @@
 .snake {
   position: absolute;
   background-color: white;
-  border-radius: 10px;
+  border-radius: 5px;
+}
+
+.button{
+text-align: center;
 }
