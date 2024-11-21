@@ -1,7 +1,9 @@
-let headTop = 5;
-let headLeft = 5;
+let headY = 5;
+let headX = 5;
 let direction = "right";
 let intervalId = null
+let foodX;
+let foodY;
 let snakeBody = [
   {x:2, y:5 },
   {x:3, y:5 },
@@ -19,26 +21,26 @@ boardEl.style.width = config.width * config.size + "px";
 boardEl.style.height = config.height * config.size + "px";
 
 function goUp() {
-  headTop = headTop - 1;
-  if (headTop < 0) {
-    headTop = config.height - 1;
+  headY = headY - 1;
+  if (headY < 0) {
+    headY = config.height - 1;
   }
   print();
  
 }
 
 function goDown() {
-  headTop = headTop + 1;
-  if (headTop === config.height) {
-    headTop = 0;
+  headY = headY + 1;
+  if (headY === config.height) {
+    headY = 0;
   }
   print();
 }
 
 function goRight() {
-  headLeft = headLeft + 1;
-  if (headLeft === config.width) {
-    headLeft =  0;
+  headX = headX + 1;
+  if (headX === config.width) {
+    headX =  0;
   }
   
 
@@ -46,9 +48,9 @@ function goRight() {
 }
 
 function goLeft() {
-  headLeft = headLeft - 1;
-  if (headLeft < 0) {
-    headLeft = config.width - 1;
+  headX = headX - 1;
+  if (headX < 0) {
+    headX = config.width - 1;
   }
  
 
@@ -66,12 +68,13 @@ function changeDirection(newDirection) {
     }
   }
  
-  console.log(direction);
+
 }
 
 function startGame (){
   if (!intervalId){
     intervalId = setInterval(gameLoop, 200);
+    generateFood();
   }
    
 }
@@ -83,8 +86,8 @@ function pauseGame (){
   }
 }
 function reset (){
-  headTop = 5
-  headLeft = 5
+  headY = 5
+  headX = 5
   direction = "right"
    snakeBody = [
     {x:2, y:5 },
@@ -95,15 +98,27 @@ function reset (){
 
 function restartGame (){
   
-  headTop = 10;
-  headLeft = 12;
+  headY = 10;
+  headX = 12;
   direction = "right"
   reset();
-  
+  generateFood();
 }
 
 function gameLoop() {
-  snakeBody.push({x:headLeft, y:headTop})
+  if (headX === foodX && headY === foodY){
+    generateFood()
+    snakeBody.push({x:headX, y:headY})
+  }
+  
+  for(let i = 0; i<snakeBody.length-1; i++){
+    if (headX === snakeBody[i].x && headY === snakeBody[i].y){
+      alert("Муу юмбээ??? дахиад эхэллээ шүү")
+      restartGame()
+    }
+  }
+
+  snakeBody.push({x:headX, y:headY})
   snakeBody.shift()
   switch (direction) {
     case "up":
@@ -120,10 +135,16 @@ function gameLoop() {
       break;
   }
 }
+function generateFood () {
+  foodX =Math.floor (Math.random() * config.width);
+  foodY = Math.floor(Math.random() * config.height) ;
+  console.log(foodY)
+}
+
 
 function listenKeys(event) {
   key = event.key
-  console.log(key)
+
   switch (key){
     case "ArrowUp":
     changeDirection("up");
@@ -146,8 +167,8 @@ function print() {
   for ( let i = 0; i<snakeBody.length; i++){
     snakeBodyHtml += `<div class="snake" style="width: ${1 * config.size}px; height: ${1 * config.size}px; top: ${snakeBody[i].y * config.size}px; left: ${snakeBody[i].x * config.size}px"></div>`
   }
-
+  const foodHtml = `<div class="food" style="width: ${1 * config.size}px; height: ${1 * config.size}px; top: ${foodY * config.size}px; left: ${foodX * config.size}px"></div>`
   const snakeHtml = ` ${snakeBodyHtml}`;
-  boardEl.innerHTML = snakeHtml;
+  boardEl.innerHTML = ` ${foodHtml} ${snakeHtml} `;
 }
 
